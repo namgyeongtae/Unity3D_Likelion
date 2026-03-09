@@ -9,12 +9,18 @@ public class PlayerController : MonoBehaviour
 {
     [SerializeField] private Transform _headTransform;
 
+    [Header("이동")]
+    [SerializeField] [Range(0f, 5f)] private float breaForce = 1f;
+
+    [SerializeField] private float _jumpHeight = 2f;
+
     private Animator _animator;
     private PlayerInput _playerInput;
     private CharacterController _cc;
 
 
     // 애니메이션 키
+    public static readonly int PlayerAniParamGround = Animator.StringToHash("ground_distance");
     public static readonly int PlayerAniParamJump = Animator.StringToHash("jump");
     public static readonly int PlayerAniParamIdle = Animator.StringToHash("idle");
     public static readonly int PlayerAniParamMove = Animator.StringToHash("move");
@@ -24,6 +30,8 @@ public class PlayerController : MonoBehaviour
     {
         None, Idle, Move, Jump
     }
+
+    private float _velocityY;
 
     // 현재 상태
     public EPlayerState PlayerState { get; private set; }
@@ -76,5 +84,29 @@ public class PlayerController : MonoBehaviour
         _playerStates[PlayerState].Enter();
 
         Debug.Log($"상태 변경: {PlayerState}");
+    }
+
+    public void Jump()
+    {
+        if (!_cc.isGrounded) return;
+        _velocityY = Mathf.Sqrt(Constants.Gravity * -2f * _jumpHeight);
+    }
+
+    private void OnAnimatorMove()
+    {
+        Vector3 movePosition;
+        if (_cc.isGrounded)
+        {
+            movePosition = _animator.deltaPosition;
+        }
+        else
+        {
+            movePosition = _cc.velocity * Time.deltaTime;
+        }
+
+        _velocityY += Constants.Gravity * Time.deltaTime;
+        movePosition.y = _velocityY * Time.deltaTime;
+
+        _cc.Move(movePosition);
     }
 }

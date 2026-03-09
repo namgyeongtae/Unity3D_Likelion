@@ -12,7 +12,7 @@ public class IdlePlayerState : PlayerState, IPlayerState
         // Debug.Log("##Idle Enter");
         _animator.SetBool(PlayerController.PlayerAniParamIdle, true);
 
-        // ╬в╪г гр╢Г
+        // О©╫в╪О©╫ О©╫р╢О©╫
         _playerInput.actions["Jump"].performed += Jump;
     }
 

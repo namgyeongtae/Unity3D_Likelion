@@ -12,15 +12,20 @@ public class JumpPlayerState : PlayerState, IPlayerState
     public void Enter()
     {
         _animator.SetTrigger(PlayerController.PlayerAniParamJump);
-
-        
-    }
-
-    public void Exit()
-    {
     }
 
     public void Update()
+    {
+        // Ground Distance 업데이트
+        var playerPosition = _playerController.transform.position;
+        var distance = CharacterUtil.GetDistanceFromGround(playerPosition, Constants.GroundLayerMask, 10f);
+    
+        _animator.SetFloat(PlayerController.PlayerAniParamGround, distance);
+
+        Debug.DrawRay(playerPosition, Vector3.down * 10f, Color.red);
+    }
+
+    public void Exit()
     {
     }
 }

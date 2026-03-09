@@ -17,6 +17,8 @@ public class MovePlayerState : PlayerState, IPlayerState
 
         // _moveSpeed 초기화
         _moveSpeed = 0f;
+
+        _playerInput.actions["Jump"].performed += Jump;
     }
 
     public void Update()
@@ -52,5 +54,7 @@ public class MovePlayerState : PlayerState, IPlayerState
     {
         // Move 애니메이션 중단
         _animator.SetBool(PlayerController.PlayerAniParamMove, false);
+    
+        _playerInput.actions["Jump"].performed -= Jump;
     }
 }
