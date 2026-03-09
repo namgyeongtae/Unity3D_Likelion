@@ -15,12 +15,14 @@ public class PlayerController : MonoBehaviour
 
 
     // 애니메이션 키
+    public static readonly int PlayerAniParamJump = Animator.StringToHash("jump");
+    public static readonly int PlayerAniParamIdle = Animator.StringToHash("idle");
     public static readonly int PlayerAniParamMove = Animator.StringToHash("move");
     public static readonly int PlayerAniParamMoveSpeed = Animator.StringToHash("move_speed");
 
     public enum EPlayerState
     {
-        None, Idle, Move
+        None, Idle, Move, Jump
     }
 
     // 현재 상태
@@ -39,6 +41,7 @@ public class PlayerController : MonoBehaviour
         // 상태 객체 초기화
         _playerStates.Add(EPlayerState.Idle, new IdlePlayerState(this, _playerInput, _animator));
         _playerStates.Add(EPlayerState.Move, new MovePlayerState(this, _playerInput, _animator));
+        _playerStates.Add(EPlayerState.Jump, new JumpPlayerState(this, _playerInput, _animator));
         
         var playerCamera = Camera.main;
         if (playerCamera != null)

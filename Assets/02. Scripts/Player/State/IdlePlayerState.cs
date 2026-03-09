@@ -9,7 +9,11 @@ public class IdlePlayerState : PlayerState, IPlayerState
 
     public void Enter()
     {
-        Debug.Log("##Idle Enter");
+        // Debug.Log("##Idle Enter");
+        _animator.SetBool(PlayerController.PlayerAniParamIdle, true);
+
+        // 액션 할당
+        _playerInput.actions["Jump"].performed += Jump;
     }
 
     public void Update()
@@ -22,6 +26,8 @@ public class IdlePlayerState : PlayerState, IPlayerState
 
     public void Exit()
     {
-        Debug.Log("##Idle Exit");
+        _animator.SetBool(PlayerController.PlayerAniParamIdle, false);
+
+        _playerInput.actions["Jump"].performed -= Jump;
     }
 }

@@ -35,4 +35,9 @@ public class PlayerState
             }
         }
     }
+
+    protected void Jump(InputAction.CallbackContext context)
+    {
+        _playerController.ChangeState(PlayerController.EPlayerState.Jump);
+    }
 }
