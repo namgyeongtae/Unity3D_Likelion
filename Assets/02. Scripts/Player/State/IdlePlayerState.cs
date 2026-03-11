@@ -2,7 +2,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using static PlayerController;
 
-public class IdlePlayerState : PlayerState, IPlayerState
+public class IdlePlayerState : PlayerState, ICharacterState
 {
     public IdlePlayerState(PlayerController playerController, PlayerInput playerInput, Animator animator) 
         : base(playerController, playerInput, animator) { }
@@ -14,6 +14,7 @@ public class IdlePlayerState : PlayerState, IPlayerState
 
         // �׼� �Ҵ�
         _playerInput.actions["Jump"].performed += Jump;
+        _playerInput.actions["Fire"].performed += Attack;
     }
 
     public void Update()
@@ -29,5 +30,6 @@ public class IdlePlayerState : PlayerState, IPlayerState
         _animator.SetBool(PlayerController.PlayerAniParamIdle, false);
 
         _playerInput.actions["Jump"].performed -= Jump;
+        _playerInput.actions["Fire"].performed -= Attack;
     }
 }

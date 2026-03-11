@@ -41,4 +41,9 @@ public class PlayerState
         _playerController.Jump();
         _playerController.ChangeState(PlayerController.EPlayerState.Jump);
     }
+
+    protected void Attack(InputAction.CallbackContext context)
+    {
+        _playerController.ChangeState(PlayerController.EPlayerState.Attack);
+    }
 }

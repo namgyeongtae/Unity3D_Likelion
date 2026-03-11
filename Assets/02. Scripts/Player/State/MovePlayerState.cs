@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class MovePlayerState : PlayerState, IPlayerState
+public class MovePlayerState : PlayerState, ICharacterState
 {
     private float _moveSpeed;
 
@@ -19,6 +19,7 @@ public class MovePlayerState : PlayerState, IPlayerState
         _moveSpeed = 0f;
 
         _playerInput.actions["Jump"].performed += Jump;
+        _playerInput.actions["Fire"].performed += Attack;
     }
 
     public void Update()
@@ -56,5 +57,6 @@ public class MovePlayerState : PlayerState, IPlayerState
         _animator.SetBool(PlayerController.PlayerAniParamMove, false);
     
         _playerInput.actions["Jump"].performed -= Jump;
+        _playerInput.actions["Fire"].performed -= Attack;
     }
 }

@@ -25,10 +25,11 @@ public class PlayerController : MonoBehaviour
     public static readonly int PlayerAniParamIdle = Animator.StringToHash("idle");
     public static readonly int PlayerAniParamMove = Animator.StringToHash("move");
     public static readonly int PlayerAniParamMoveSpeed = Animator.StringToHash("move_speed");
+    public static readonly int PlayerAniParamAttack = Animator.StringToHash("attack");
 
     public enum EPlayerState
     {
-        None, Idle, Move, Jump
+        None, Idle, Move, Jump, Attack
     }
 
     private float _velocityY;
@@ -37,7 +38,7 @@ public class PlayerController : MonoBehaviour
     public EPlayerState PlayerState { get; private set; }
 
     // 상태와 상태 객체를 담고 있는 Dictionary
-    private Dictionary<EPlayerState, IPlayerState> _playerStates = new();
+    private Dictionary<EPlayerState, ICharacterState> _playerStates = new();
 
     void Awake()
     {
@@ -50,16 +51,20 @@ public class PlayerController : MonoBehaviour
         _playerStates.Add(EPlayerState.Idle, new IdlePlayerState(this, _playerInput, _animator));
         _playerStates.Add(EPlayerState.Move, new MovePlayerState(this, _playerInput, _animator));
         _playerStates.Add(EPlayerState.Jump, new JumpPlayerState(this, _playerInput, _animator));
-        
+        _playerStates.Add(EPlayerState.Attack, new AttackPlayerState(this, _playerInput, _animator));
+
         var playerCamera = Camera.main;
         if (playerCamera != null)
         {
             _playerInput.camera = playerCamera;
             playerCamera.GetComponent<CameraController>().SetTarget(_headTransform, _playerInput);
         }
+
+        // 커서 숨기기
+        _playerInput.actions["Cursor"].performed += _ => GameManager.Instance.SetCursorLock();
     }
 
-    void Start()
+    protected virtual void Start()
     {
         PlayerState = EPlayerState.Idle;
     }
@@ -75,11 +80,13 @@ public class PlayerController : MonoBehaviour
     // 새로운 상태를 할당하는 함수
     public void ChangeState(EPlayerState newState)
     {
-        Debug.Assert(newState != EPlayerState.None, "상태는 None이 될 수 없습니다.");
+        Debug.Assert(newState != EPlayerState.None && PlayerState != EPlayerState.None, "상태는 None이 될 수 없습니다."); 
         Debug.Assert(_playerStates.ContainsKey(newState), "상태가 존재하지 않습니다.");
         Debug.Assert(PlayerState != newState, "이미 해당 상태입니다.");
 
-        _playerStates[PlayerState].Exit();
+        if (PlayerState == EPlayerState.None || newState == EPlayerState.None) return;
+
+        _playerStates[PlayerState]?.Exit();
         PlayerState = newState;
         _playerStates[PlayerState].Enter();
 
